@@ -14,8 +14,6 @@ export function fetchPlaces(criteria) {
         })
         .then(response => response.json())
         .then(result => {
-            console.log(result);
-
             dispatcher.dispatch({
                 type: "FETCH_PLACES_COMPLETED", 
                 places: result

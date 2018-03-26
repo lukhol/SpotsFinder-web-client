@@ -32,10 +32,17 @@ export default class PlacesMap extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                Mapa: {this.state.places.length}
-            </div>
-        )
+        if(this.state.loading) {
+            return(
+                <div className="sf-loader-big center-block">
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    Mapa: {this.state.places.length}
+                </div>
+            )
+        }
     }
 }

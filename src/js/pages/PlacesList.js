@@ -41,13 +41,20 @@ export default class PlacesList extends React.Component {
             );
         }
 
-        return(
-            <div className="container">
-                Lista miejsc ({this.state.places.length}):
-                <div className="row row-eq-height">
-                    {placesComponents}
+        if(this.state.loading) {
+            return(
+                <div className="sf-loader-big center-block">
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return(
+                <div className="container">
+                    Lista miejsc ({this.state.places.length}):
+                    <div className="row row-eq-height">
+                        {placesComponents}
+                    </div>
+                </div>
+            )
+        }
     }
 }

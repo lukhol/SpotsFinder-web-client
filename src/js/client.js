@@ -14,7 +14,7 @@ import dispatcher from './dispatcher.js';
 
 import  * as UserActions from './actions/UserActions.js';
 
-window.BASE_URL = "http://80.211.223.50:8080";
+window.BASE_URL = "http://localhost:8080";
 
 ReactDOM.render(
     <Router history={hashHistory}>

@@ -78,8 +78,6 @@ export default class PlacesSearchesModal extends React.Component {
         if(this.state.diy) 
             json.type.push(2);
         
-
-        console.log(JSON.stringify(json));
         PlaceActions.fetchPlaces(json);
 
         this.setState({

@@ -59,7 +59,7 @@ export function logout() {
 }
 
 export function fetchUserInfo(userId, accessToken, refreshToken) {
-    const fetchUserInfoUrl = "http://80.211.223.50:8080" + "/user/info/" + userId;
+    const fetchUserInfoUrl = "http://localhost:8080" + "/user/info/" + userId;
 
     fetch(fetchUserInfoUrl, {
         method: 'GET',
