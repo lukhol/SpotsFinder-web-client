@@ -21,6 +21,8 @@ export default class AddPlaceModal extends React.Component {
         this.onInputChanged = this.onInputChanged.bind(this);
         this.onSelectChanged = this.onSelectChanged.bind(this);
         this.onMapClicked = this.onMapClicked.bind(this);
+        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.onImagePicked = this.onImagePicked.bind(this);
 
         this.state = {
             showModal: true, 
@@ -48,15 +50,9 @@ export default class AddPlaceModal extends React.Component {
                 latitude: 51.75924850,
                 longitude: 19.45598330
             },
-            zoom: 7
-            //images - [{ "id": null, "image" : "base64"}]
+            zoom: 7,
+            images: []
         };
-
-        //id - long/null
-        //userId - int
-        //version - long
-        //type - int
-        //location {"latitude" : 51, "longitude" : 19}
     }
 
     onCheckboxChange(event) {
@@ -99,6 +95,27 @@ export default class AddPlaceModal extends React.Component {
         });
     }
 
+    onImagePicked(event) {
+        console.log(event);
+        let files = event.target.files;
+        let reader = new FileReader();
+        let images = this.state.images.slice();
+        let that = this;
+
+        reader.onload = function(e) {
+            if(that.state.images.length == 5) {
+                alert("Nie można dodać więcej zdjęć!");
+                return;
+            }
+
+            images.push(e.target.result);
+            that.setState({
+                images: images
+            });
+        }
+        reader.readAsDataURL(files[0]);
+    }
+
     handleFormSubmit(event) {
         event.preventDefault();
         let json = {};
@@ -124,7 +141,18 @@ export default class AddPlaceModal extends React.Component {
         json.version = this.state.version;
         json.type = Number(this.state.type);
         json.location = this.state.location;
-        console.log(json);
+        
+        let images = [];
+        for(let i = 0 ; i < this.state.images.length ; i++) {
+            images.push({
+                id: null,
+                image: this.state.images[i].substring(23)
+            });
+        }
+
+        json.images = images;
+
+        PlaceActions.uploadPlace(json);
     }
 
     render() {
@@ -138,6 +166,16 @@ export default class AddPlaceModal extends React.Component {
         let marker = (
             <Marker position={[this.state.location.latitude, this.state.location.longitude]} />
         );
+
+        let images = [];
+        for(let i = 0 ; i < this.state.images.length ; i++) {
+            let marginStyle = { margin: "10px" };
+            images.push(
+                <div className="col-xs-12 col-sm-6 col-md-4">
+                    <img src={this.state.images[i]} style={marginStyle} className="center-block img-responsive"/>
+                </div>
+            ); 
+        }
 
         return (
             <Modal show={this.state.showModal} onHide={this.close} style={this.modalStyle} >
@@ -289,10 +327,23 @@ export default class AddPlaceModal extends React.Component {
                             {marker}
                         </Map>
                     </div>
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <label>Zdjęcia:</label>
+                            <div>
+                                <input type="file" name="img" onChange={this.onImagePicked} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">  
+                        <div styleName="col-sm-12">
+                            {images}
+                        </div>
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={this.close}>Zamknij</Button>
-                    <button type="submit" form="place-form" className="btn btn-primary">Szukaj</button>
+                    <button type="submit" form="place-form" className="btn btn-primary">Dodaj</button>
                 </Modal.Footer>
             </Modal>
           )
