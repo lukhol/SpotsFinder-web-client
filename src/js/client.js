@@ -8,6 +8,7 @@ import Login from "./pages/Login.js";
 import PlacesMap from "./pages/PlacesMap.js";
 import AddPlace from "./pages/AddPlace.js";
 import PlacesSearchesModal from "./pages/PlacesSearchesModal.js";
+import AddPlaceModal from "./pages/AddPlaceModal.js";
 import PlacesList from "./pages/PlacesList.js";
 
 import dispatcher from './dispatcher.js';
@@ -34,7 +35,7 @@ function searchPlaces() {
     hashHistory.goBack();
     document.getElementById("_modal").innerHTML = "";
     ReactDOM.render(
-        <PlacesSearchesModal />,
+        <AddPlaceModal />,
         document.getElementById("_modal")
     );
 }

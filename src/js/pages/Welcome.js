@@ -11,7 +11,7 @@ export default class Welcome extends React.Component {
         };
 
         return(
-            <div style={aligntJustifyStyle}>
+            <div className="container" style={aligntJustifyStyle}>
                 <h2 className="text-center">Witaj na stronie głównej!</h2>
                 <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed iaculis ac arcu at hendrerit. Nulla dapibus aliquet est in lobortis. Sed a lacus iaculis, rutrum magna vitae, accumsan leo. Suspendisse sit amet semper nisl, eget aliquet justo. Cras nisl enim, sollicitudin non erat vitae, venenatis tempus orci. Vestibulum viverra mollis augue eu sodales. Morbi mi lacus, fringilla vel blandit et, consectetur consequat ligula. Nulla rutrum pulvinar justo quis imperdiet.
