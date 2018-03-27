@@ -8,6 +8,7 @@ class PlaceStore extends EventEmitter {
         super();
         this.places = [];
         this.loading = false;
+        this.uploading = false;
     }
 
     getPlaces() {
@@ -26,6 +27,24 @@ class PlaceStore extends EventEmitter {
         this.emit("change");
     }
 
+    uploadingStarted() {
+        console.log("upload started");
+        this.uploading = true;
+        this.emit("change");
+    }
+
+    uploadingCompleted() {
+        console.log("upload completed");
+        this.uploading = false;
+        this.emit("change");
+    }
+
+    uploadingError() {
+        console.log("upload error");
+        this.uploading = false;
+        this.emit("change");
+    }
+
     handleActions(action) {
         switch(action.type) {
             case "FETCH_PLACES_STARTED": {
@@ -34,6 +53,18 @@ class PlaceStore extends EventEmitter {
             }
             case "FETCH_PLACES_COMPLETED": {
                 this.fetchCompleted(action.places);
+                break;
+            }
+            case "UPLOAD_PLACE_STARTED" : {
+                this.uploadingStarted();
+                break;
+            }
+            case "UPLOAD_PLACES_COMPLETED" : {
+                this.uploadingCompleted();
+                break;
+            }
+            case "UPLOAD_PLACES_ERROR" : {
+                this.uploadingError();
                 break;
             }
         }

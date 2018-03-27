@@ -79,7 +79,6 @@ export default class PlaceSearchModal extends React.Component {
             json.type.push(2);
         
         PlaceActions.fetchPlaces(json);
-
         this.close();
     }
 

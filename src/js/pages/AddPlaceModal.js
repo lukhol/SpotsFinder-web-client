@@ -96,7 +96,6 @@ export default class AddPlaceModal extends React.Component {
     }
 
     onImagePicked(event) {
-        console.log(event);
         let files = event.target.files;
         let reader = new FileReader();
         let images = this.state.images.slice();
