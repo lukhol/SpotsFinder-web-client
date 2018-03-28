@@ -3,7 +3,8 @@ import { Modal, Button } from 'react-bootstrap';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
 import * as PlaceActions from "../actions/PlaceActions.js";
-import UserStore from '../stores/UserStore';
+import UserStore from '../stores/UserStore.js';
+import PlaceStore from '../stores/PlaceStore.js';
 var serialize = require('form-serialize');
 
 export default class AddPlaceModal extends React.Component {
@@ -23,6 +24,7 @@ export default class AddPlaceModal extends React.Component {
         this.onMapClicked = this.onMapClicked.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.onImagePicked = this.onImagePicked.bind(this);
+        this.uploadChanged = this.uploadChanged.bind(this);
 
         this.state = {
             showModal: true, 
@@ -51,7 +53,9 @@ export default class AddPlaceModal extends React.Component {
                 longitude: 19.45598330
             },
             zoom: 7,
-            images: []
+            images: [],
+            isUploading: false,
+            error: null
         };
     }
 
@@ -154,12 +158,40 @@ export default class AddPlaceModal extends React.Component {
         PlaceActions.uploadPlace(json);
     }
 
+    componentWillMount() {
+        PlaceStore.on("change", this.uploadChanged);
+    }
+
+    componentWillUnmount() {
+        PlaceStore.removeListener("change", this.uploadChanged);
+    }
+
+    uploadChanged() {
+        if(PlaceStore.uploadedSuccesfully) {
+            this.close();
+        } else {
+            //Error handling.
+            this.setState({
+                error: PlaceStore.error
+            });
+            console.log(this.state.error);
+        }
+
+        this.setState({
+            isUploading: PlaceStore.uploading
+        });
+    }
+
     render() {
         let st = {
             width: "94%",
             height: "300px",
             marginLeft: "3%",
             marginRight: "3%"
+        };
+
+        let errorMessageColorStyle = {
+            color: "red"
         };
 
         let marker = (
@@ -176,6 +208,189 @@ export default class AddPlaceModal extends React.Component {
             ); 
         }
 
+        let addPlaceModalBody = {};
+
+        if(this.state.isUploading){
+            addPlaceModalBody = (
+                <Modal.Body>
+                    <div className="sf-loader-big center-block">
+                    </div>
+                </Modal.Body>
+            );
+        } else {
+            addPlaceModalBody = (<Modal.Body>
+                <form onSubmit={this.handleFormSubmit} id="place-form" >
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <label htmlFor="name">Nazwa:</label>
+                            <input className="form-control" id="name" name="name" type="text" value={this.state.name} onChange={this.onInputChanged} />
+                            {
+                                this.state.error == null ? "" : (
+                                    <div style={errorMessageColorStyle}>
+                                        {this.state.error.name}
+                                    </div>
+                                )
+                            }
+                        </div>
+                        <br/>
+                        <div className="col-sm-12">
+                            <label htmlFor="description">Opis:</label>
+                            <input className="form-control" id="description" name="description" type="text" value={this.state.description} onChange={this.onInputChanged} />
+                            {
+                                this.state.error == null ? "" : (
+                                    <div style={errorMessageColorStyle}>
+                                        {this.state.error.description}
+                                    </div>
+                                )
+                            }
+                        </div> 
+                    </div>
+    
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <label>Typ:</label>
+                            <div>
+                                <select className="form-control" id="type" value={this.state.type} onChange={this.onSelectChanged}>
+                                    <option value="0">Skatepark</option>
+                                    <option value="1">Skatespot</option>
+                                    <option value="2">DIY</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div className="row">
+                            <div class="col-xs-12">
+                                <label>Przeszkody:</label>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-3">
+                                <div className="checkbox">
+                                    <label htmlFor="bank">
+                                        <input id="bank" name="bank" type="checkbox" value={this.state.bank} checked={this.state.bank}  onChange={this.onCheckboxChange}/>
+                                        Bank
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label htmlFor="bowl">
+                                        <input id="bowl" name="bowl" type="checkbox" value={this.state.bowl} checked={this.state.bowl} onChange={this.onCheckboxChange}/>
+                                        Bowl
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-3">
+                                <div className="checkbox">
+                                    <label htmlFor="ledge">
+                                        <input id="ledge" name="ledge" type="checkbox" value={this.state.ledge} checked={this.state.ledge} onChange={this.onCheckboxChange}/>
+                                        Murek
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label htmlFor="corners">
+                                        <input id="corners" name="corners" type="checkbox" value={this.state.corners} checked={this.state.corners} onChange={this.onCheckboxChange}/>
+                                        Kąty
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-3">
+                                <div className="checkbox">
+                                    <label htmlFor="curb">
+                                        <input id="curb" name="curb" type="checkbox" value={this.state.curb} checked={this.state.curb} onChange={this.onCheckboxChange}/>
+                                        Krawężnik
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label htmlFor="downhill">
+                                        <input id="downhill" name="downhill" type="checkbox" value={this.state.downhill} checked={this.state.downhill} onChange={this.onCheckboxChange}/>
+                                        Downhill
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-3">
+                                <div className="checkbox">
+                                    <label htmlFor="gap">
+                                        <input id="gap" name="gap" type="checkbox" value={this.state.gap} checked={this.state.gap} onChange={this.onCheckboxChange}/>
+                                        Gap
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label htmlFor="handrail">
+                                        <input id="handrail" name="handrail" type="checkbox" value={this.state.handrail} checked={this.state.handrail} onChange={this.onCheckboxChange}/>
+                                        Poręcz
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-3">
+                                <div className="checkbox">
+                                    <label htmlFor="manualpad">
+                                        <input id="manualpad" name="manualpad" type="checkbox" value={this.state.manualpad} checked={this.state.manualpad} onChange={this.onCheckboxChange}/>
+                                        Manualpad
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label htmlFor="openYourMind">
+                                        <input id="openYourMind" name="openYourMind" type="checkbox" value={this.state.openYourMind} checked={this.state.openYourMind} onChange={this.onCheckboxChange}/>
+                                        Open your mind!
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-3">
+                                <div className="checkbox">
+                                    <label htmlFor="pyramid">
+                                        <input id="pyramid" name="pyramid" type="checkbox" value={this.state.pyramid} checked={this.state.pyramid} onChange={this.onCheckboxChange}/>
+                                        Piramida
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label htmlFor="rail">
+                                        <input id="rail" name="rail" type="checkbox" value={this.state.rail} checked={this.state.rail} onChange={this.onCheckboxChange}/>
+                                        Rurka
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-3">
+                                <div className="checkbox">
+                                    <label htmlFor="stairs">
+                                        <input id="stairs" name="stairs" type="checkbox" value={this.state.stairs} checked={this.state.stairs} onChange={this.onCheckboxChange}/>
+                                        Schody
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label htmlFor="wallride">
+                                        <input id="wallride" name="wallride" type="checkbox" value={this.state.wallride} checked={this.state.wallride} onChange={this.onCheckboxChange}/>
+                                        Wallride
+                                    </label>
+                                </div>
+                            </div>
+                        </div>    
+                    <hr />
+                </form>
+                <div className="row">
+                    <div className="col-sm-12">
+                        <label>Lokalizacja:</label>
+                    </div>
+                    <Map style={st} center={[this.state.location.latitude, this.state.location.longitude]} zoom={this.state.zoom} onClick={this.onMapClicked}>
+                        <TileLayer
+                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                            url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'/>
+                        {marker}
+                    </Map>
+                </div>
+                <div className="row">
+                    <div className="col-sm-12">
+                        <label>Zdjęcia:</label>
+                        <div>
+                            <input type="file" name="img" onChange={this.onImagePicked} />
+                        </div>
+                    </div>
+                </div>
+                <div className="row">  
+                    <div styleName="col-sm-12">
+                        {images}
+                    </div>
+                </div>
+            </Modal.Body>);
+        }
+
         return (
             <Modal show={this.state.showModal} onHide={this.close} style={this.modalStyle} >
                 <Modal.Header closeButton>
@@ -183,163 +398,7 @@ export default class AddPlaceModal extends React.Component {
                         <h2 style={this.modalStyle}>Dodaj nowy spot</h2>
                     </div>
                 </Modal.Header>
-                <Modal.Body>
-                    <form onSubmit={this.handleFormSubmit} id="place-form" >
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <label htmlFor="name">Nazwa:</label>
-                                <input className="form-control" id="name" name="name" type="text" value={this.state.name} onChange={this.onInputChanged} />
-                            </div>
-                            <br/>
-                            <div className="col-sm-12">
-                                <label htmlFor="description">Opis:</label>
-                                <input className="form-control" id="description" name="description" type="text" value={this.state.description} onChange={this.onInputChanged} />
-                            </div> 
-                        </div>
-
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <label>Typ:</label>
-                                <div>
-                                    <select className="form-control" id="type" value={this.state.type} onChange={this.onSelectChanged}>
-                                        <option value="0">Skatepark</option>
-                                        <option value="1">Skatespot</option>
-                                        <option value="2">DIY</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                                <div class="col-xs-12">
-                                    <label>Przeszkody:</label>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-3">
-                                    <div className="checkbox">
-                                        <label htmlFor="bank">
-                                            <input id="bank" name="bank" type="checkbox" value={this.state.bank} checked={this.state.bank}  onChange={this.onCheckboxChange}/>
-                                            Bank
-                                        </label>
-                                    </div>
-                                    <div className="checkbox">
-                                        <label htmlFor="bowl">
-                                            <input id="bowl" name="bowl" type="checkbox" value={this.state.bowl} checked={this.state.bowl} onChange={this.onCheckboxChange}/>
-                                            Bowl
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-3">
-                                    <div className="checkbox">
-                                        <label htmlFor="ledge">
-                                            <input id="ledge" name="ledge" type="checkbox" value={this.state.ledge} checked={this.state.ledge} onChange={this.onCheckboxChange}/>
-                                            Murek
-                                        </label>
-                                    </div>
-                                    <div className="checkbox">
-                                        <label htmlFor="corners">
-                                            <input id="corners" name="corners" type="checkbox" value={this.state.corners} checked={this.state.corners} onChange={this.onCheckboxChange}/>
-                                            Kąty
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-3">
-                                    <div className="checkbox">
-                                        <label htmlFor="curb">
-                                            <input id="curb" name="curb" type="checkbox" value={this.state.curb} checked={this.state.curb} onChange={this.onCheckboxChange}/>
-                                            Krawężnik
-                                        </label>
-                                    </div>
-                                    <div className="checkbox">
-                                        <label htmlFor="downhill">
-                                            <input id="downhill" name="downhill" type="checkbox" value={this.state.downhill} checked={this.state.downhill} onChange={this.onCheckboxChange}/>
-                                            Downhill
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-3">
-                                    <div className="checkbox">
-                                        <label htmlFor="gap">
-                                            <input id="gap" name="gap" type="checkbox" value={this.state.gap} checked={this.state.gap} onChange={this.onCheckboxChange}/>
-                                            Gap
-                                        </label>
-                                    </div>
-                                    <div className="checkbox">
-                                        <label htmlFor="handrail">
-                                            <input id="handrail" name="handrail" type="checkbox" value={this.state.handrail} checked={this.state.handrail} onChange={this.onCheckboxChange}/>
-                                            Poręcz
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-3">
-                                    <div className="checkbox">
-                                        <label htmlFor="manualpad">
-                                            <input id="manualpad" name="manualpad" type="checkbox" value={this.state.manualpad} checked={this.state.manualpad} onChange={this.onCheckboxChange}/>
-                                            Manualpad
-                                        </label>
-                                    </div>
-                                    <div className="checkbox">
-                                        <label htmlFor="openYourMind">
-                                            <input id="openYourMind" name="openYourMind" type="checkbox" value={this.state.openYourMind} checked={this.state.openYourMind} onChange={this.onCheckboxChange}/>
-                                            Open your mind!
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-3">
-                                    <div className="checkbox">
-                                        <label htmlFor="pyramid">
-                                            <input id="pyramid" name="pyramid" type="checkbox" value={this.state.pyramid} checked={this.state.pyramid} onChange={this.onCheckboxChange}/>
-                                            Piramida
-                                        </label>
-                                    </div>
-                                    <div className="checkbox">
-                                        <label htmlFor="rail">
-                                            <input id="rail" name="rail" type="checkbox" value={this.state.rail} checked={this.state.rail} onChange={this.onCheckboxChange}/>
-                                            Rurka
-                                        </label>
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-3">
-                                    <div className="checkbox">
-                                        <label htmlFor="stairs">
-                                            <input id="stairs" name="stairs" type="checkbox" value={this.state.stairs} checked={this.state.stairs} onChange={this.onCheckboxChange}/>
-                                            Schody
-                                        </label>
-                                    </div>
-                                    <div className="checkbox">
-                                        <label htmlFor="wallride">
-                                            <input id="wallride" name="wallride" type="checkbox" value={this.state.wallride} checked={this.state.wallride} onChange={this.onCheckboxChange}/>
-                                            Wallride
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>    
-                        <hr />
-                    </form>
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <label>Lokalizacja:</label>
-                        </div>
-                        <Map style={st} center={[this.state.location.latitude, this.state.location.longitude]} zoom={this.state.zoom} onClick={this.onMapClicked}>
-                            <TileLayer
-                                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'/>
-                            {marker}
-                        </Map>
-                    </div>
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <label>Zdjęcia:</label>
-                            <div>
-                                <input type="file" name="img" onChange={this.onImagePicked} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">  
-                        <div styleName="col-sm-12">
-                            {images}
-                        </div>
-                    </div>
-                </Modal.Body>
+                {addPlaceModalBody}
                 <Modal.Footer>
                     <Button onClick={this.close}>Zamknij</Button>
                     <button type="submit" form="place-form" className="btn btn-primary">Dodaj</button>

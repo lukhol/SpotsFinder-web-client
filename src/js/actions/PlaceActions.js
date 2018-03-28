@@ -35,6 +35,13 @@ export function uploadPlace(place) {
                 'Content-Type': 'application/json'
             }
         })
+        .then(response => {
+            if(response.status != 201) {
+                throw response;
+            } else {
+                return response;
+            }
+        })
         .then(response => response.json())
         .then(result => {
             dispatcher.dispatch({
@@ -43,7 +50,11 @@ export function uploadPlace(place) {
             });
         })
         .catch(error => {
-            dispatcher.dispatch({type: "UPLOAD_PLACES_ERROR"});
+            Promise
+                .resolve(error.json())
+                .then(errors => {
+                    dispatcher.dispatch({type: "UPLOAD_PLACES_ERROR", errors: errors});
+                });
         });
     }, 1);
 }
