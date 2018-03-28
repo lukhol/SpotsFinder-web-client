@@ -6,7 +6,7 @@ export default class Layout extends React.Component {
   render() {
     return (
       <div>
-        <Header title = "ReactJS"/>
+        <Header/>
         <div className="">
           {this.props.children}
         </div>

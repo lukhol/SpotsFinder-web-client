@@ -128,7 +128,6 @@ export default class AddPlaceModal extends React.Component {
         json.curb = this.state.curb;
         json.downhill = this.state.downhill;
         json.gap = this.state.gap;
-        json.handleFormSubmit = this.state.handrail;
         json.ledge = this.state.ledge;
         json.manualpad = this.state.manualpad;
         json.openYourMind = this.state.openYourMind;
@@ -172,7 +171,7 @@ export default class AddPlaceModal extends React.Component {
         } else {
             //Error handling.
             this.setState({
-                error: PlaceStore.error
+                error: PlaceStore.uploadingError
             });
             console.log(this.state.error);
         }
@@ -379,7 +378,7 @@ export default class AddPlaceModal extends React.Component {
                     <div className="col-sm-12">
                         <label>Zdjęcia:</label>
                         <div>
-                            <input type="file" name="img" onChange={this.onImagePicked} />
+                            <input type="file" name="img" onChange={this.onImagePicked} accept="image/*" />
                         </div>
                     </div>
                 </div>

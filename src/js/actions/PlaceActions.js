@@ -58,3 +58,34 @@ export function uploadPlace(place) {
         });
     }, 1);
 }
+
+export function downloadPlace(id) {
+    setTimeout(function() {
+        dispatcher.dispatch({
+            type: "DOWNLOAD_PLACE_STARTED", 
+            id: id
+        });
+
+        fetch('http://localhost:8080/places/' + id, {
+            method: "GET",
+            headers: {
+                'Authorization': 'Basic c3BvdGZpbmRlcjpzcG90ZmluZGVyU2VjcmV0',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            dispatcher.dispatch({
+                type: "DOWNLOAD_PLACE_COMPLETED",
+                place: result
+            });
+        })
+        .catch(error => {
+            dispatcher.dispatch({
+                type: "DOWNLOAD_PLACE_ERROR",
+                error: "error do zrobienia - single place"
+            });
+        });
+    }, 1);
+}

@@ -23,9 +23,6 @@ export default class PlaceSearchModal extends React.Component {
             skatepark: true, 
             skatespot: true,
             diy: true,
-            modalStyle: {
-                display: "block"
-            },
             bank: false,
             bowl: false,
             ledge: false,

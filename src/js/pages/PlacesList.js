@@ -1,14 +1,17 @@
 import React from 'react';
+import ReactDOM from "react-dom";
 
 import PlaceStore from "../stores/PlaceStore.js";
 import * as PlaceActions from "../actions/PlaceActions.js";
 import PlaceCard from "../components/PlaceCard.js";
+import PlaceDetailsModal from "../pages/PlaceDetailsModal.js";
 
 export default class PlacesList extends React.Component {
     constructor(props) {
         super(props);
 
         this.placeStoreEvent = this.placeStoreEvent.bind(this);
+        this.detailsClicked = this.detailsClicked.bind(this);
 
         this.state = {
             loading: PlaceStore.loading,
@@ -31,12 +34,22 @@ export default class PlacesList extends React.Component {
         });
     }
 
+    detailsClicked(event) {
+        //alert(event.target.id);
+        // PlaceActions.downloadPlace(event.target.id);
+        // document.getElementById("_modal").innerHTML = "";
+        // ReactDOM.render(
+        //     <PlaceDetailsModal />,
+        //     document.getElementById("_modal")
+        // );
+    }
+
     render() {
         let placesComponents = [];
         for(let i = 0 ; i < this.state.places.length ; i++) {
             placesComponents.push(
-                <div className="col-sm-12 col-md-6 col-lg-4">
-                    <PlaceCard place={this.state.places[i]}/>
+                <div className="col-sm-12 col-lg-4">
+                    <PlaceCard place={this.state.places[i]} id={this.state.places[i].id} onClick={this.detailsClicked}/>
                 </div>
             );
         }
@@ -50,7 +63,7 @@ export default class PlacesList extends React.Component {
             return(
                 <div className="container">
                     Lista miejsc ({this.state.places.length}):
-                    <div className="row row-eq-height">
+                    <div className="row">
                         {placesComponents}
                     </div>
                 </div>
