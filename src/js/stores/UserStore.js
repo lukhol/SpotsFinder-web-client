@@ -35,6 +35,7 @@ class UserStore extends EventEmitter {
         let menuItems;
         let search;
         let placesList;
+        let addPlace;
 
         placesMap = {
             title: "Mapa",
@@ -54,6 +55,12 @@ class UserStore extends EventEmitter {
             subitems: []
         };
 
+        addPlace = {
+            title: "Dodaj",
+            link: "/addPlace",
+            subitems: []
+        };
+
         if(this.isUserLoggedIn == true){
             login = {
                 title: "Logout",
@@ -61,7 +68,7 @@ class UserStore extends EventEmitter {
                 subitems: []
             };
 
-            menuItems = [placesMap, placesList, search, login];
+            menuItems = [placesMap, placesList, search, addPlace, login];
         } else {
             login = {
                 title: "Login",

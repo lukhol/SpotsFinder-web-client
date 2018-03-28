@@ -14,14 +14,15 @@ export default class PlaceSearchModal extends React.Component {
         this.open = this.open.bind(this);
         this.close = this.close.bind(this);
 
+        this.modalStyle = {
+            color: "black"
+        };
+
         //0-Skatepark, 1-Skatespot, 2-DIY
         this.state = {
             skatepark: true, 
             skatespot: true,
             diy: true,
-            modalStyle: {
-                display: "block"
-            },
             bank: false,
             bowl: false,
             ledge: false,
@@ -75,7 +76,6 @@ export default class PlaceSearchModal extends React.Component {
             json.type.push(2);
         
         PlaceActions.fetchPlaces(json);
-
         this.close();
     }
 
@@ -106,10 +106,6 @@ export default class PlaceSearchModal extends React.Component {
     }
 
     render(){
-        let blackFont = {
-            color: "black"
-        };
-
         let marginPadding = {
             margin: "0px",
             padding: "0px"
@@ -120,10 +116,10 @@ export default class PlaceSearchModal extends React.Component {
         };
 
         return(
-            <Modal show={this.state.showModal} onHide={this.close} style={blackFont} >
+            <Modal show={this.state.showModal} onHide={this.close} style={this.modalStyle} >
                 <Modal.Header closeButton>
                     <div className="text-center">
-                        <h2 class="modal-title" style={blackFont}>Szukaj spotów</h2>
+                        <h2 style={this.modalStyle}>Szukaj spotów</h2>
                         <small>Wyniki zostaną przedstawione w zakładce Lista oraz Mapa.</small>
                     </div>
                 </Modal.Header>
@@ -131,18 +127,6 @@ export default class PlaceSearchModal extends React.Component {
                     <form onSubmit={this.handleFormSubmit} id="place-form" >
                         <input type="hidden" name="location[latitude]" value="null" />
                         <input type="hidden" name="location[longitude]" value="null" />
-                    
-                        {/* <div className="row">
-                            <div className="col-sm-12">
-                                <label htmlFor="name">Nazwa:</label>
-                                <input className="form-control" id="name" name="name" type="text" />
-                            </div>
-                            <br/>
-                            <div className="col-sm-12">
-                                <label htmlFor="description">Opis:</label>
-                                <input className="form-control" id="description" name="description" type="text" />
-                            </div> 
-                        </div> */}
 
                         <div className="row">
                             <div className="col-sm-12">
@@ -287,8 +271,8 @@ export default class PlaceSearchModal extends React.Component {
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type="submit" form="place-form" className="btn btn-primary">Szukaj</button>
                     <button type="button" className="btn btn-secondary" onClick={this.close}>Anuluj</button>
+                    <button type="submit" form="place-form" className="btn btn-primary">Szukaj</button>
                 </Modal.Footer>
             </Modal>
         )

@@ -26,6 +26,7 @@ ReactDOM.render(
             <Route path="/placesMap" component={PlacesMap}> </Route>
             <Route path="/placesList" component={PlacesList}> </Route>
             <Route path="/search" onEnter={ () => { searchPlaces(); }} />
+            <Route path="/addPlace" onEnter={ () => { addPlace(); }} />
         </Route>
     </Router>,
     document.getElementById('app')
@@ -36,6 +37,15 @@ function searchPlaces() {
     document.getElementById("_modal").innerHTML = "";
     ReactDOM.render(
         <PlaceSearchModal />,
+        document.getElementById("_modal")
+    );
+}
+
+function addPlace() {
+    hashHistory.goBack();
+    document.getElementById("_modal").innerHTML = "";
+    ReactDOM.render(
+        <AddPlaceModal />,
         document.getElementById("_modal")
     );
 }
