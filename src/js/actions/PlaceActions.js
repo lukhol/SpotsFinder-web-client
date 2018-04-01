@@ -1,16 +1,13 @@
 import dispatcher from "../dispatcher.js";
+import AppStore from "../stores/AppStore.js";
 
 export function fetchPlaces(criteria) {
     setTimeout(function() {
         dispatcher.dispatch({type: "FETCH_PLACES_STARTED"})
-        fetch('http://localhost:8080/places/searches', {
+        fetch(AppStore.SERVER_URL + '/places/searches', {
             method: 'POST',
             body: JSON.stringify(criteria),
-            headers: {
-                'Authorization': 'Basic c3BvdGZpbmRlcjpzcG90ZmluZGVyU2VjcmV0',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            headers: AppStore.getJsonBasicHeaders()
         })
         .then(response => response.json())
         .then(result => {
@@ -26,14 +23,10 @@ export function fetchPlaces(criteria) {
 export function uploadPlace(place) {
     setTimeout(function() {
         dispatcher.dispatch({type: "UPLOAD_PLACE_STARTED"});
-        fetch('http://localhost:8080/places',{
+        fetch(AppStore.SERVER_URL + '/places',{
             method: 'POST',
             body: JSON.stringify(place),
-            headers: {
-                'Authorization': 'Basic c3BvdGZpbmRlcjpzcG90ZmluZGVyU2VjcmV0',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            headers: AppStore.getJsonBearerHeaders()
         })
         .then(response => {
             if(response.status != 201) {
@@ -50,11 +43,15 @@ export function uploadPlace(place) {
             });
         })
         .catch(error => {
-            Promise
-                .resolve(error.json())
-                .then(errors => {
-                    dispatcher.dispatch({type: "UPLOAD_PLACES_ERROR", errors: errors});
-                });
+            if(error.status == 401) {
+                dispatcher.dispatch({type: "UNAUTHORIZED"});
+            } else {
+                Promise
+                    .resolve(error.json())
+                    .then(errors => {
+                        dispatcher.dispatch({type: "UPLOAD_PLACES_ERROR", errors: errors});
+                    });
+            }
         });
     }, 1);
 }
@@ -66,13 +63,9 @@ export function downloadPlace(id) {
             id: id
         });
 
-        fetch('http://localhost:8080/places/' + id, {
+        fetch(AppStore.SERVER_URL + '/places/' + id, {
             method: "GET",
-            headers: {
-                'Authorization': 'Basic c3BvdGZpbmRlcjpzcG90ZmluZGVyU2VjcmV0',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            headers: AppStore.getJsonBasicHeaders()
         })
         .then(response => response.json())
         .then(result => {

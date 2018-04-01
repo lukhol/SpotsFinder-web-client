@@ -173,7 +173,6 @@ export default class AddPlaceModal extends React.Component {
             this.setState({
                 error: PlaceStore.uploadingError
             });
-            console.log(this.state.error);
         }
 
         this.setState({

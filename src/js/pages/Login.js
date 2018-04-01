@@ -79,7 +79,7 @@ export default class Login extends React.Component {
             <div> 
                 <form name='f' action="login" method='POST'>
                     <div className="container" style={loginStyle}>
-                        <h1>Login</h1>
+                        <h1 className="text-center">Login</h1>
                         <label htmlFor="username">Username:</label>  <br/>
                         <input type='text' name='username' value={this.state.login} onChange={this.changeLoginChanged} />  <br/>
 
@@ -94,6 +94,11 @@ export default class Login extends React.Component {
                         <button name="submit" className="btn btn-primary btn-block" onClick={this.login}>Login</button>
                         
                         <br/>
+                        {UserStore.registraionSuccess == true ? (
+                                <span className="alert alert-success center-block">
+                                    Rejestracja przebiegła pomyślnie. Możesz się zalogować!
+                                </span>
+                            ) : ""}
                         <div className="alert alert-danger" style={this.style}>
                             Wrong credential
                         </div>

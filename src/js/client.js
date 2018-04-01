@@ -10,6 +10,7 @@ import AddPlace from "./pages/AddPlace.js";
 import PlaceSearchModal from "./pages/PlaceSearchModal.js";
 import AddPlaceModal from "./pages/AddPlaceModal.js";
 import PlacesList from "./pages/PlacesList.js";
+import RegisterUser from "./pages/RegisterUser.js";
 
 import dispatcher from './dispatcher.js';
 
@@ -25,8 +26,9 @@ ReactDOM.render(
             <Route path="/logout" component={Welcome} onEnter={() =>{ UserActions.logout(); }}> </Route>
             <Route path="/placesMap" component={PlacesMap}> </Route>
             <Route path="/placesList" component={PlacesList}> </Route>
-            <Route path="/search" onEnter={ () => { searchPlaces(); }} />
-            <Route path="/addPlace" onEnter={ () => { addPlace(); }} />
+            <Route path="/search" onEnter={ () => { searchPlaces(); }}></Route>
+            <Route path="/addPlace" onEnter={ () => { addPlace(); }}></Route>
+            <Route path="/registerUser" component={RegisterUser}></Route>
         </Route>
     </Router>,
     document.getElementById('app')

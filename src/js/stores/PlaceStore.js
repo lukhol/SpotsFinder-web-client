@@ -38,7 +38,7 @@ class PlaceStore extends EventEmitter {
     }
 
     uploadingStarted() {
-        console.log("upload started");
+        //console.log("upload started");
         this.uploading = true;
         this.uploadedSuccesfully = false;
         this.uploadingError = null;
@@ -46,7 +46,7 @@ class PlaceStore extends EventEmitter {
     }
 
     uploadingCompleted() {
-        console.log("upload completed");
+        //console.log("upload completed");
         this.uploading = false;
         this.uploadedSuccesfully = true;
         this.uploadingError = null;
@@ -54,7 +54,7 @@ class PlaceStore extends EventEmitter {
     }
 
     uploadingErrorMethod(error) {
-        console.log("upload error");
+        //console.log("upload error");
         this.uploading = false;
         this.uploadedSuccesfully = false;
         this.uploadingError = error;
@@ -63,7 +63,7 @@ class PlaceStore extends EventEmitter {
 
     //Single place:
     downloadSinglePlaceStarted(id) {
-        console.log("download single place started");
+        //console.log("download single place started");
         this.singlePlaceId = id;
         this.loadingSinglePlace = true;
         this.loadingSinglePlaceError = null;
@@ -72,7 +72,7 @@ class PlaceStore extends EventEmitter {
     }
 
     downloadSinglePlaceCompleted(place) {
-        console.log("download single place completed");
+        //console.log("download single place completed");
         this.singlePlaceId = place.id;
         this.loadingSinglePlace = false;
         this.loadingSinglePlaceError = null;
@@ -81,7 +81,7 @@ class PlaceStore extends EventEmitter {
     }
 
     downloadSinglePlaceError(error) {
-        console.log("download single place error");
+        //console.log("download single place error");
         this.loadingSinglePlace = false;
         this.loadingSinglePlaceError = error;
         this.singlePlace = null;

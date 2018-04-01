@@ -16,10 +16,16 @@ class UserStore extends EventEmitter {
             );
         }
 
+        //User
         this.user = {};
         this.isUserLoggedIn = false;
         this.accessToken = "";
         this.refreshToken = "";
+
+        //Registration:
+        this.registrationLoader = null;
+        this.registraionLoader = false;
+        this.registraionSuccess = false;
     }
 
     getCookie(name) {
@@ -30,12 +36,8 @@ class UserStore extends EventEmitter {
 
     getMenuItems() {
 
-        let login;
-        let placesMap;
-        let menuItems;
-        let search;
-        let placesList;
-        let addPlace;
+        let login, placesMap, menuItems, search,placesList, addPlace,
+            registerUser;
 
         placesMap = {
             title: "Mapa",
@@ -61,6 +63,12 @@ class UserStore extends EventEmitter {
             subitems: []
         };
 
+        registerUser = {
+            title: "Rejestracja",
+            link: "/registerUser",
+            subitems: []
+        };
+
         if(this.isUserLoggedIn == true){
             login = {
                 title: "Logout",
@@ -76,7 +84,7 @@ class UserStore extends EventEmitter {
                 subitems: []
             };
 
-            menuItems = [placesMap, placesList,search, login];
+            menuItems = [placesMap, placesList,search, registerUser, login];
         }
         this.menuItems = menuItems;
         return menuItems;
@@ -101,6 +109,11 @@ class UserStore extends EventEmitter {
         this.user = user;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        
+        //Clear register state:!
+        this.registrationLoader = null;
+        this.registraionLoader = false;
+        this.registraionSuccess = false;
 
         if(remember) {
             document.cookie = "userId=" + user.id;
@@ -109,13 +122,33 @@ class UserStore extends EventEmitter {
         }
 
         hashHistory.replace('/');
-
-        //console.log(this.isUserLoggedIn);
-        //console.log(this.user);
-        //console.log(this.accessToken);
-        //console.log(this.refreshToken);
-
         this.emit("change");
+    }
+    
+    //Registraion: 
+    registrationStart() {
+        console.log("registraion start");
+        this.registrationErrors = null;
+        this.registrationLoader = true;
+        this.registraionSuccess = false;
+        this.emit("change");
+    }
+
+    registerUserFaild(errors) {
+        console.log("registraion failed");
+        this.registrationErrors = errors;
+        this.registrationLoader = false;
+        this.registraionSuccess = false;
+        this.emit("change");
+    }
+
+    registrationUserSuccess() {
+        console.log("registraion success");
+        this.registrationErrors = null;
+        this.registrationLoader = false;
+        this.registraionSuccess = true;
+        this.emit("change");
+        hashHistory.replace("/login");
     }
 
     handleActions(action) {
@@ -131,6 +164,22 @@ class UserStore extends EventEmitter {
             case "LOGIN_FAILED_ACTION": {
                 this.loginFailure = true;
                 this.emit("change");
+                break;
+            }
+            case "UNAUTHORIZED" : {
+                //TODO: logout and go to login page
+                break;
+            }
+            case "REGISTRATION_START_ACTION": {
+                this.registrationStart();
+                break;
+            }
+            case "REGISTRATION_FAILD_ACTION": {
+                this.registerUserFaild(action.errors);
+                break;
+            }
+            case "REGISTRATION_SUCCESS_ACTION": {
+                this.registrationUserSuccess();
                 break;
             }
         }
