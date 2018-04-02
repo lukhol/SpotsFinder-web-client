@@ -127,10 +127,7 @@ export function recoverAccount(email) {
                 return response;
             }
         })
-<<<<<<< HEAD
-=======
         //.then(response => response.json()) //Commented because now this endpoint on success does not return json.
->>>>>>> release/1.1
         .then(result => {
             dispatcher.dispatch({type: "RECOVER_ACCOUNT_SUCCESS_ACTION", message: "Na podany adres email zostały wysłane dalsze instrukcje."});
         })
