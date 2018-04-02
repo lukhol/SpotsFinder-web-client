@@ -142,7 +142,7 @@ export default class PlaceSearchModal extends React.Component {
                         </div>
 
                         <div className="row">
-                            <div class="col-xs-12">
+                            <div className="col-xs-12">
                                 <label>Typ:</label>
                             </div>
                             <div className="col-sm-12">
@@ -166,7 +166,7 @@ export default class PlaceSearchModal extends React.Component {
                         </div>
 
                         <div className="row">
-                            <div class="col-xs-12">
+                            <div className="col-xs-12">
                                 <label>Przeszkody:</label>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-3">

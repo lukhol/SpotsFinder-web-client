@@ -173,7 +173,6 @@ export default class AddPlaceModal extends React.Component {
             this.setState({
                 error: PlaceStore.uploadingError
             });
-            console.log(this.state.error);
         }
 
         this.setState({
@@ -380,6 +379,13 @@ export default class AddPlaceModal extends React.Component {
                         <div>
                             <input type="file" name="img" onChange={this.onImagePicked} accept="image/*" />
                         </div>
+                        {
+                            this.state.error == null ? "" : (
+                                <div style={errorMessageColorStyle}>
+                                    {this.state.error.images}
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
                 <div className="row">  
