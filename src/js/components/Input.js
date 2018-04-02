@@ -4,7 +4,7 @@ export default class Input extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            val: props.val
+            value: props.value
         };
 
         this.internalOnInputChanged = this.internalOnInputChanged.bind(this);
@@ -14,7 +14,7 @@ export default class Input extends React.Component {
         this.setState({
             val: event.target.value
         });
-        this.props.onInputChanged(event);
+        this.props.onChange(event);
     }
 
     render() {
@@ -29,6 +29,7 @@ export default class Input extends React.Component {
                        value={this.state.val} 
                        onChange={this.internalOnInputChanged} 
                        id={this.props.id}
+                       style={this.props.style}
                 />
             </div>
         )

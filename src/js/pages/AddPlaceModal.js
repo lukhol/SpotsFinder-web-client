@@ -379,6 +379,13 @@ export default class AddPlaceModal extends React.Component {
                         <div>
                             <input type="file" name="img" onChange={this.onImagePicked} accept="image/*" />
                         </div>
+                        {
+                            this.state.error == null ? "" : (
+                                <div style={errorMessageColorStyle}>
+                                    {this.state.error.images}
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
                 <div className="row">  

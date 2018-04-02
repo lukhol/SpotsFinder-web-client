@@ -77,16 +77,16 @@ export default class RegisterUser extends React.Component {
                     <form className="center-block" style={{ maxWidth: "400px" }}>
                         <h1 style={{ textAlign: "center" }}>Rejestracja:</h1>
 
-                        <Input id="firstname" type="text" placeholder="Imie" val={this.state.firstname} onInputChanged={this.onInputChanged}/>
+                        <Input id="firstname" type="text" placeholder="Imie" value={this.state.firstname} onChange={this.onInputChanged}/>
                         {this.state.error != null ? (<span style={errorStyle}>{this.state.error.firstname}</span>) : " "}
 
-                        <Input id="lastname" type="text" placeholder="Nazwisko" val={this.state.lastname} onInputChanged={this.onInputChanged}/>
+                        <Input id="lastname" type="text" placeholder="Nazwisko" value={this.state.lastname} onChange={this.onInputChanged}/>
                         {this.state.error != null ? (<span style={errorStyle}>{this.state.error.lastname}</span>): " "}
 
-                        <Input id="email" type="text" placeholder="Email" val={this.state.email} onInputChanged={this.onInputChanged}/>
+                        <Input id="email" type="text" placeholder="Email" value={this.state.email} onChange={this.onInputChanged}/>
                         {this.state.error != null ? (<span style={errorStyle}>{this.state.error.email} </span>): " "}
 
-                        <Input id="password" type="password" placeholder="Hasło" val={this.state.password} onInputChanged={this.onInputChanged}/>
+                        <Input id="password" type="password" placeholder="Hasło" value={this.state.password} onChange={this.onInputChanged}/>
                         {this.state.error != null ? (<span style={errorStyle}>{this.state.error.password} </span>): " "}
 
                         <Button className="btn-lg btn-block btn-success" onClick={this.onRegisterClicked}>Rejestruj</Button>

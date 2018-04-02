@@ -26,6 +26,14 @@ class UserStore extends EventEmitter {
         this.registrationLoader = null;
         this.registraionLoader = false;
         this.registraionSuccess = false;
+
+        //Recover account:
+        this.recoverAccount = {
+            isBusy: false,
+            isMessageVisible: false,
+            success: false,
+            message: ""
+        };
     }
 
     getCookie(name) {
@@ -151,8 +159,43 @@ class UserStore extends EventEmitter {
         hashHistory.replace("/login");
     }
 
+    recoverAccountStart() {
+        this.recoverAccount = {
+            isBusy: true,
+            isMessageVisible: false,
+            success: false,
+            message: ""
+        };
+        console.log("recover start");
+
+        this.emit("change");
+    }
+
+    recoverAccountSuccess(msg) {
+        this.recoverAccount = {
+            isBusy: false,
+            isMessageVisible: true,
+            success: true,
+            message: msg
+        };
+        console.log("recover success");
+        this.emit("change");
+    }
+
+    recoverAccountFailed(msg) {
+        this.recoverAccount = {
+            isBusy: false,
+            isMessageVisible: true,
+            success: false,
+            message: msg
+        };
+        console.log("recover failed");
+        this.emit("change");
+    }
+
     handleActions(action) {
         switch(action.type) {
+            //========================== LOGIN ==========================
             case "LOGOUT_ACTION":{
                 this.logout();
                 break;
@@ -170,6 +213,7 @@ class UserStore extends EventEmitter {
                 //TODO: logout and go to login page
                 break;
             }
+            //========================== REGISTRATION ==========================
             case "REGISTRATION_START_ACTION": {
                 this.registrationStart();
                 break;
@@ -180,6 +224,19 @@ class UserStore extends EventEmitter {
             }
             case "REGISTRATION_SUCCESS_ACTION": {
                 this.registrationUserSuccess();
+                break;
+            }
+            //========================== RECOVER ACCOUNT ==========================
+            case "RECOVER_ACCOUNT_START_ACTION": {
+                this.recoverAccountStart();
+                break;
+            }
+            case "RECOVER_ACCOUNT_SUCCESS_ACTION": {
+                this.recoverAccountSuccess(action.message);
+                break;
+            }
+            case "RECOVER_ACCOUNT_FAILED_ACTION" : {
+                this.recoverAccountFailed(action.message);
                 break;
             }
         }

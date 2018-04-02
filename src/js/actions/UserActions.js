@@ -23,7 +23,7 @@ export function login(username, password, remember) {
                 data.append('password', password);
                 data.append('grant_type', 'password');
             
-                const oauthUrl = window.BASE_URL + "/oauth/token";
+                const oauthUrl = AppStore.SERVER_URL + "/oauth/token";
                 fetch(oauthUrl, {
                     method: 'POST',
                     headers: {
@@ -108,6 +108,33 @@ export function register(firstname, lastname, email, password) {
                 .resolve(error.json())
                 .then(errors => {
                     dispatcher.dispatch({type: "REGISTRATION_FAILD_ACTION", errors: errors});
+                });
+        });
+    }, 1);
+}
+
+export function recoverAccount(email) {
+    setTimeout(function() {
+        dispatcher.dispatch({type: "RECOVER_ACCOUNT_START_ACTION"});
+        fetch(AppStore.SERVER_URL + "/user/recover?emailAddress="+email, {
+            method: "GET",
+            headers: AppStore.getJsonBasicHeaders()
+        })
+        .then(response => {
+            if(response.status != 200){
+                throw response;
+            } else {
+                return response;
+            }
+        })
+        .then(result => {
+            dispatcher.dispatch({type: "RECOVER_ACCOUNT_SUCCESS_ACTION", message: "Na podany adres email zostały wysłane dalsze instrukcje."});
+        })
+        .catch(error => {
+            Promise
+                .resolve(error.json())
+                .then(errorResponse => {
+                    dispatcher.dispatch({type: "RECOVER_ACCOUNT_FAILED_ACTION", message: errorResponse.message});
                 });
         });
     }, 1);
